@@ -1,0 +1,13 @@
+*.md
+/tests
+/docs
+*.log
+*.gz
+*.zip
+*.tar
+*.tgz
+*.rar
+.DS_Store
+*.sqlite3
+*.db
+*.env

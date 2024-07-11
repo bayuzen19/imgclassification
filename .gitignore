@@ -1,0 +1,16 @@
+# .slugignore
+*.md
+tests/
+docs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pkl
+*.sqlite3
+local_settings.py
+env/
+venv/
+virtualenv/
+node_modules/
+.DS_Store
