@@ -8,6 +8,6 @@ tensorflow==2.16.2
 torchvision==0.18.1
 keras==3.4.1
 keras-tuner==1.4.7
-numpy==2.0.0
+numpy>=1.23.5,<2.0.0
 pillow==10.4.0
 pydantic==2.8.2
