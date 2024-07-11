@@ -1,0 +1,13 @@
+fastapi
+fastapi-cli
+fastjsonschema
+opencv-python
+jsonschema
+uvicorn==0.30.1
+tensorflow
+torchvision
+keras
+keras-tuner
+numpy
+pillow
+pydantic
