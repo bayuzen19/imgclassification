@@ -9,15 +9,11 @@ import numpy as np
 import cv2
 import base64
 
-from tensorflow.keras.applications.vgg16 import VGG16
-from tensorflow.keras.applications.vgg16 import preprocess_input as vgg_preprocess_input
-from tensorflow.keras.preprocessing import image as tf_image
-
 app = FastAPI()
 
-# Load pre-trained VGG16 model
-vgg_model = VGG16(weights='imagenet', include_top=True)
-class_labels = ["Fe", "Fi", "Le", "Ln", "Se", "Si", "Te", "Ti"]
+# Load the custom small CNN model
+model = tf.keras.models.load_model('small_cnn_model.h5')
+class_labels = ['Fe', 'Fi', 'Ie', 'Ii', 'In', 'Se', 'Si', 'Te', 'Ti']
 
 class ImageData(BaseModel):
     id: str
@@ -33,9 +29,11 @@ def download_image(image_url: str) -> Image:
 
 def preprocess_image(image: Image) -> np.ndarray:
     # Convert PIL Image to numpy array
-    img = tf_image.img_to_array(image)
-    img = np.expand_dims(img, axis=0)
-    img = vgg_preprocess_input(img)
+    img = np.array(image.resize((224, 224)))  # Resize to match model input
+    if img.shape[2] == 4:  # Convert RGBA to RGB if necessary
+        img = img[:, :, :3]
+    img = img.astype('float32') / 255.0  # Normalize to [0, 1]
+    img = np.expand_dims(img, axis=0)  # Add batch dimension
     return img
 
 @app.post("/predict")
@@ -44,11 +42,11 @@ async def predict(image_data: ImageData):
         # Download image from URL
         image = download_image(image_data.image_url)
 
-        # Preprocess image for VGG16
+        # Preprocess image for the small CNN model
         processed_image = preprocess_image(image)
 
-        # Make prediction using VGG16 model
-        prediction = vgg_model.predict(processed_image)
+        # Make prediction using the small CNN model
+        prediction = model.predict(processed_image)
         predicted_label = class_labels[np.argmax(prediction)]
 
         # Convert image to base64 for response
