@@ -6,7 +6,6 @@ from PIL import Image
 import requests
 import io
 import numpy as np
-import cv2
 import base64
 
 app = FastAPI()
@@ -28,7 +27,6 @@ def download_image(image_url: str) -> Image:
         raise HTTPException(status_code=400, detail="Unable to download image from URL")
 
 def preprocess_image(image: Image) -> np.ndarray:
-    # Convert PIL Image to numpy array
     img = np.array(image.resize((224, 224)))  # Resize to match model input
     if img.shape[2] == 4:  # Convert RGBA to RGB if necessary
         img = img[:, :, :3]
