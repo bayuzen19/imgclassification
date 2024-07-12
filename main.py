@@ -27,11 +27,13 @@ def download_image(image_url: str) -> Image:
         raise HTTPException(status_code=400, detail="Unable to download image from URL")
 
 def preprocess_image(image: Image) -> np.ndarray:
-    img = np.array(image.resize((224, 224)))  # Resize to match model input
-    if img.shape[2] == 4:  # Convert RGBA to RGB if necessary
+    print(f"Initial image size: {image.size}")
+    img = np.array(image.resize((224, 224)))
+    print(f"Resized image shape: {img.shape}")
+    if img.shape[2] == 4:
         img = img[:, :, :3]
-    img = img.astype('float32') / 255.0  # Normalize to [0, 1]
-    img = np.expand_dims(img, axis=0)  # Add batch dimension
+    img = img.astype('float32') / 255.0  
+    img = np.expand_dims(img, axis=0)  
     return img
 
 @app.post("/predict")
