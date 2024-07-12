@@ -6,8 +6,4 @@ tensorflow==2.16.2
 numpy>=1.23.5,<2.0.0
 pillow==10.4.0
 pydantic==2.8.2
-<<<<<<< HEAD
 requests
-=======
-requests
->>>>>>> b2adcd56cc982b7f4a2b6c201a4b0bc0e96e02a1
