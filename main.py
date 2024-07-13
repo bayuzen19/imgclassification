@@ -85,7 +85,7 @@ class_labels = ['Fe', 'Fi', 'Ie', 'Ii', 'In', 'Se', 'Si', 'Te', 'Ti']
 
 class ImageData(BaseModel):
     id: str
-    image_url: str
+    image_urls: List[str]
 
 def download_image(image_url: str) -> Image:
     response = requests.get(image_url)
@@ -93,7 +93,7 @@ def download_image(image_url: str) -> Image:
         image = Image.open(io.BytesIO(response.content))
         return image
     else:
-        raise HTTPException(status_code=400, detail="Unable to download image from URL")
+        raise HTTPException(status_code=400, detail=f"Unable to download image from URL: {image_url}")
 
 def preprocess_image(image: Image) -> np.ndarray:
     img = np.array(image.resize((224, 224)))
@@ -104,12 +104,15 @@ def preprocess_image(image: Image) -> np.ndarray:
     return img
 
 @app.post("/predict")
-async def predict(image_data_batch: List[ImageData]):
+async def predict(image_data: ImageData):
     try:
+        if len(image_data.image_urls) != 10:
+            raise HTTPException(status_code=400, detail="Must provide exactly 10 image URLs")
+        
         predictions = []
-        for image_data in image_data_batch:
+        for image_url in image_data.image_urls:
             # Download image from URL
-            image = download_image(image_data.image_url)
+            image = download_image(image_url)
 
             # Preprocess image for the small CNN model
             processed_image = preprocess_image(image)
